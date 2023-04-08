@@ -1,0 +1,5 @@
+hello, how do you do[RIGHT_SHIFT]/[ENTER]
+[LEFT_WINDOWS]note[ENTER]
+[SHIFT]i assuem this is working[RIGHT_SHIFT]/ [SHIFT]no[RIGHT_SHIFT]/[ENTER]
+[ENTER]
+[RIGHT_SHIFT]well, cool.[CTRL][CTRL]s
