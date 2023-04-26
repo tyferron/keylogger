@@ -1,0 +1,2 @@
+[RIGHT_SHIFT]am [SHIFT]i that much of an idiot?[RIGHT_SHIFT]c[CTRL][LEFT_WINDOWS]note[ENTER]
+v[CTRL]

@@ -1,0 +1,4 @@
+hot[ENTER]
+[CTRL]c[ALT][TAB]v[CTRL][ENTER]
+[ALT][TAB]c[CTRL][ALT][TAB]v[CTRL][ENTER]
+

@@ -1,0 +1,3 @@
+[ENTER]
+print self.file[TAB][ENTER]
+[BACKSPACE]([SHIFT])[SHIFT][TAB][TAB]print("[SHIFT]c[CTRL]v[CTRL]
